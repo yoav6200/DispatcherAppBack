@@ -40,29 +40,41 @@ var axios_1 = require("axios");
 var mongoose_1 = require("mongoose");
 var strings_1 = require("../constants/strings");
 require("dotenv/config");
+// const clientOptions = {
+//   serverApi: '1' as const,
+// };
 var apikey = process.env.APP_API_KEY;
-// Create a new schema object
+var myDataSchema = new mongoose_1.Schema({
+    title: String,
+    description: String,
+    url: String,
+    urlToImage: String,
+    publishedAt: String,
+    id: Number,
+    author: String,
+    content: String,
+});
 var mySchema = new mongoose_1.Schema({
     id: { type: Number },
-    data: { type: Object },
+    data: [myDataSchema],
 });
-// Create the MyModel model
 var myModel = mongoose_1.default.model('MyModel', mySchema);
-// Connect to MongoDB using Mongoose
-// Define the onLoad function
 var onLoad = function () { return __awaiter(void 0, void 0, void 0, function () {
     var response, data, result, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, 4, 5]);
-                // Make API request to external API
-                console.log("".concat(strings_1.API_URL).concat(apikey));
                 return [4 /*yield*/, axios_1.default.get("".concat(strings_1.API_URL).concat(apikey))];
             case 1:
                 response = _a.sent();
+                if (response.status !== 200) {
+                    console.error("API error: ".concat(response.status));
+                    return [2 /*return*/];
+                }
                 data = response.data;
-                return [4 /*yield*/, myModel.create({ name: 'top-headlines', data: data })];
+                console.log(data);
+                return [4 /*yield*/, myModel.create({ data: data })];
             case 2:
                 result = _a.sent();
                 console.log("Data stored in MongoDB: ".concat(result._id));
@@ -72,14 +84,12 @@ var onLoad = function () { return __awaiter(void 0, void 0, void 0, function () 
                 console.error(error_1);
                 return [3 /*break*/, 5];
             case 4:
-                // Close MongoDB connection
                 mongoose_1.default.disconnect();
                 return [7 /*endfinally*/];
             case 5: return [2 /*return*/];
         }
     });
 }); };
-// Call the onLoad function
 mongoose_1.default
     .set('strictQuery', false)
     .connect(strings_1.CONNECT_URL)
