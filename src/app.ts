@@ -4,14 +4,20 @@ import helmet from 'helmet';
 import router from './routes';
 import { connectToDatabase } from './services/database.service';
 import { newsRouter } from './routes/news.routes';
-import { onLoad } from './controllers/newsController';
-import { CONNECTION_FAILED, START } from './constants/strings';
+import { onLoad } from './services/news.service';
+import {
+  CONNECTION_FAILED,
+  DATABASE_CONNECTED,
+  START,
+} from './constants/strings';
+
 export enum onloadOperations {
-  Create,
-  Update,
-  Delete,
-  None,
+  Create = 'Create',
+  Update = 'Update',
+  Delete = 'Delete',
+  None = 'None',
 }
+
 const app = express();
 const port = 3000;
 
@@ -22,10 +28,19 @@ app.use(express.json());
 app.use('/', router);
 
 connectToDatabase()
-  .then(() => {
+  .then(async () => {
     app.use('/news', newsRouter);
 
-    onLoad(onloadOperations.None);
+    console.log(`${DATABASE_CONNECTED}`);
+
+    // Call onLoad during startup
+    try {
+      await onLoad(onloadOperations.None); // Change the operation as needed
+      console.log('Initial news data operation completed');
+    } catch (error) {
+      console.error('Error during initial data load:', error);
+    }
+
     app.listen(port, () => {
       console.log(`${START}${port}`);
     });

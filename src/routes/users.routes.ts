@@ -1,20 +1,19 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import {
-  getUsersController,
-  getUserByIdController,
-  createUserController,
-  updateUserController,
-  deleteUserController,
-} from '../controllers/users.controllers';
+  getUsersHandler,
+  getUserByIdHandler,
+  createUserHandler,
+  updateUserHandler,
+  deleteUserHandler,
+} from '../handlers/users.handlers';
 import { validateUser } from '../utils/validations/users.validations';
 
 const router = Router();
 
-router.get('/', getUsersController);
-router.get('/:id', getUserByIdController);
-router.post('/', validateUser, createUserController);
-router.put('/:id', validateUser, updateUserController);
-
-router.delete('/:id', deleteUserController);
+router.get('/', getUsersHandler);
+router.get('/:id', getUserByIdHandler);
+router.post('/', validateUser, createUserHandler);
+router.put('/:id', validateUser, updateUserHandler);
+router.delete('/:id', deleteUserHandler);
 
 export default router;

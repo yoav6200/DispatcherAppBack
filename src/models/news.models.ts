@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb';
-
 export default class News {
   constructor(
     public title: String,

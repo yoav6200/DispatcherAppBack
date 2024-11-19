@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32,22 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.collections = void 0;
-exports.connectToDatabase = connectToDatabase;
-const mongoDB = __importStar(require("mongodb"));
-const dotenv = __importStar(require("dotenv"));
-const strings_1 = require("../constants/strings");
+exports.connectToDatabase = exports.collections = void 0;
+const mongodb_1 = require("mongodb");
+const uri = '<your-database-uri>';
+const client = new mongodb_1.MongoClient(uri);
 exports.collections = {};
-// Initialize Connection
-function connectToDatabase() {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
-        dotenv.config();
-        const client = new mongoDB.MongoClient((_a = process.env.DB_CONN_STRING) !== null && _a !== void 0 ? _a : '');
+const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
         yield client.connect();
-        const db = client.db(process.env.DB_NAME);
-        const newsCollection = db.collection((_b = process.env.NEWS_COLLECTION_NAME) !== null && _b !== void 0 ? _b : 'default-collection-name');
-        exports.collections.news_articles = newsCollection;
-        console.log(`${strings_1.CONNECTION_SUCCESSFUL} ${db.databaseName} and collection: ${newsCollection.collectionName}`);
-    });
-}
+        const db = client.db('<your-database-name>');
+        // Initialize collections
+        exports.collections.news_articles = db.collection('news_articles');
+        exports.collections.users = db.collection('users');
+        console.log('Connected to the database!');
+    }
+    catch (error) {
+        console.error('Error connecting to the database', error);
+        throw error;
+    }
+});
+exports.connectToDatabase = connectToDatabase;

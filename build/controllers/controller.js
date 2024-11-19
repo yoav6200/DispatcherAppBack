@@ -8,43 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.onLoad = void 0;
-const axios_1 = __importDefault(require("axios"));
-const mongoose_1 = __importDefault(require("mongoose"));
+exports.loadNewsData = void 0;
+const app_1 = require("../app");
+const news_service_1 = require("../services/news.service");
 const strings_1 = require("../constants/strings");
-require("dotenv/config");
-const news_models_1 = __importDefault(require("../models/news.models"));
-const database_service_1 = require("../services/database.service");
-const apikey = process.env.APP_API_KEY;
-const onLoad = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const loadNewsData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield axios_1.default.get(`${strings_1.API_URL}${apikey}`);
-        if (response.status !== 200) {
-            console.error(`API error: ${response.status}`);
-            return;
+        const operation = req.query.operation;
+        if (!operation || !Object.keys(app_1.onloadOperations).includes(operation)) {
+            throw new Error(strings_1.INVALID_OPERATION);
         }
-        const data = response.data;
-        const newsArticles = data.articles.map((article) => {
-            return new news_models_1.default(article.title, article.description, article.url, article.urlToImage, article.publishedAt, article.author, article.content, article.id);
-        });
-        const result = yield ((_a = database_service_1.collections.news_articles) === null || _a === void 0 ? void 0 : _a.insertMany(newsArticles));
-        if (result) {
-            console.log(`Inserted ${result.insertedCount} news articles into MongoDB`);
-        }
-        else {
-            console.error('Failed to insert news articles');
-        }
+        const validOperation = app_1.onloadOperations[operation];
+        yield (0, news_service_1.onLoad)(validOperation);
+        res.status(200).send(`${validOperation} completed successfully'`);
     }
     catch (error) {
-        console.error(error);
-    }
-    finally {
-        mongoose_1.default.disconnect();
+        if (error instanceof Error) {
+            res.status(500).send(`Error: ${error.message}`);
+        }
+        else {
+            res.status(500).send(strings_1.UNKNOWN_ERROR);
+        }
     }
 });
-exports.onLoad = onLoad;
+exports.loadNewsData = loadNewsData;

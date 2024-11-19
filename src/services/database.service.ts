@@ -1,25 +1,25 @@
-import * as mongoDB from 'mongodb';
-import * as dotenv from 'dotenv';
-import { CONNECTION_SUCCESSFUL } from '../constants/strings';
+import { MongoClient, Collection } from 'mongodb';
 
-export const collections: { news_articles?: mongoDB.Collection } = {};
-// Initialize Connection
-export async function connectToDatabase() {
-  dotenv.config();
-  const client: mongoDB.MongoClient = new mongoDB.MongoClient(
-    process.env.DB_CONN_STRING ?? ''
-  );
+const uri = '<your-database-uri>';
+const client = new MongoClient(uri);
 
-  await client.connect();
+export const collections: {
+  news_articles?: Collection;
+  users?: Collection;
+} = {};
 
-  const db: mongoDB.Db = client.db(process.env.DB_NAME);
+export const connectToDatabase = async () => {
+  try {
+    await client.connect();
+    const db = client.db('<your-database-name>');
 
-  const newsCollection: mongoDB.Collection = db.collection(
-    process.env.NEWS_COLLECTION_NAME ?? 'default-collection-name'
-  );
-  collections.news_articles = newsCollection;
+    // Initialize collections
+    collections.news_articles = db.collection('news_articles');
+    collections.users = db.collection('users');
 
-  console.log(
-    `${CONNECTION_SUCCESSFUL} ${db.databaseName} and collection: ${newsCollection.collectionName}`
-  );
-}
+    console.log('Connected to the database!');
+  } catch (error) {
+    console.error('Error connecting to the database', error);
+    throw error;
+  }
+};

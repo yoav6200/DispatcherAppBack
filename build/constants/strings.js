@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.USER_DELETED = exports.USER_UPDATED = exports.USER_CREATED = exports.USER_NOT_FOUND = exports.VALIDATION_FAILED = exports.PASSWORD_LENGTH = exports.PASSWORD_REQUIRED = exports.EMAIL_REQUIRED = exports.NAME_REQUIRED = exports.ID_REQUIRED = exports.NOTHING_HAPPENED = exports.FAILED_DELETE_MANY = exports.FAILED_UPDATE_MANY = exports.FAILED_INSERT = exports.NOT_EXIST_REMOVE = exports.FAILED_REMOVE = exports.SUCCESSFULL_REMOVE = exports.FAILED_UPDATE = exports.SUCCESSFULL_UPDATE = exports.FAILED_CREATE = exports.SUCCESSFULL_CREATE = exports.UNABLE_FIND = exports.TOP_HEADLINES = exports.HELLO = exports.API_URL = exports.CONNECTION_SUCCESSFUL = exports.CONNECTION_FAILED = exports.START = void 0;
+exports.UNKNOWN_ERROR = exports.INVALID_OPERATION = exports.DELETE = exports.UPDATE = exports.NONE = exports.CREATE = exports.DATABASE_CONNECTED = exports.USER_DELETED = exports.USER_UPDATED = exports.USER_CREATED = exports.USER_NOT_FOUND = exports.VALIDATION_FAILED = exports.PASSWORD_LENGTH = exports.PASSWORD_REQUIRED = exports.EMAIL_REQUIRED = exports.NAME_REQUIRED = exports.ID_REQUIRED = exports.NOTHING_HAPPENED = exports.FAILED_DELETE_MANY = exports.FAILED_UPDATE_MANY = exports.FAILED_INSERT = exports.NOT_EXIST_REMOVE = exports.FAILED_REMOVE = exports.SUCCESSFULL_REMOVE = exports.FAILED_UPDATE = exports.SUCCESSFULL_UPDATE = exports.FAILED_CREATE = exports.SUCCESSFULL_CREATE = exports.UNABLE_FIND = exports.TOP_HEADLINES = exports.HELLO = exports.API_URL = exports.CONNECTION_SUCCESSFUL = exports.CONNECTION_FAILED = exports.START = void 0;
 exports.START = 'Server started at http://localhost:';
 exports.CONNECTION_FAILED = 'Database connection failed';
 exports.CONNECTION_SUCCESSFUL = 'Successfully connected to database:';
@@ -29,3 +29,10 @@ exports.USER_NOT_FOUND = 'User not found';
 exports.USER_CREATED = 'User created';
 exports.USER_UPDATED = 'User updated';
 exports.USER_DELETED = 'User deleted, id:';
+exports.DATABASE_CONNECTED = 'Database connected';
+exports.CREATE = 'Create';
+exports.NONE = 'None';
+exports.UPDATE = 'Update';
+exports.DELETE = 'Delete';
+exports.INVALID_OPERATION = 'Invalid or missing operation type';
+exports.UNKNOWN_ERROR = 'An unknown error occurred';
