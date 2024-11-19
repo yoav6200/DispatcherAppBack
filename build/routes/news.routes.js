@@ -16,6 +16,7 @@ exports.newsRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const mongodb_1 = require("mongodb");
 const database_service_1 = require("../services/database.service");
+const strings_1 = require("../constants/strings");
 exports.newsRouter = express_1.default.Router();
 exports.newsRouter.use(express_1.default.json());
 exports.newsRouter.get('/', (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,15 +39,11 @@ exports.newsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
             res.status(200).send(news);
         }
         else {
-            res
-                .status(404)
-                .send(`Unable to find matching document with id: ${req.params.id}`);
+            res.status(404).send(` ${strings_1.UNABLE_FIND} ${req.params.id}`);
         }
     }
     catch (err) {
-        res
-            .status(404)
-            .send(`Unable to find matching document with id: ${req.params.id}`);
+        res.status(404).send(`${strings_1.UNABLE_FIND} ${req.params.id}`);
     }
 }));
 exports.newsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -55,10 +52,8 @@ exports.newsRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
         const newNews = req.body;
         const result = yield ((_a = database_service_1.collections.news_articles) === null || _a === void 0 ? void 0 : _a.insertOne(newNews));
         result
-            ? res
-                .status(201)
-                .send(`Successfully created a new news article with id ${result.insertedId}`)
-            : res.status(500).send('Failed to create a new news article.');
+            ? res.status(201).send(`${strings_1.SUCCESSFULL_CREATE} ${result.insertedId}`)
+            : res.status(500).send(`${strings_1.FAILED_CREATE}`);
     }
     catch (err) {
         console.error(err);
@@ -75,8 +70,8 @@ exports.newsRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
             $set: updatedNews,
         }));
         result
-            ? res.status(200).send(`Successfully updated news article with id ${id}`)
-            : res.status(304).send(`News article with id: ${id} not updated`);
+            ? res.status(200).send(`${strings_1.SUCCESSFULL_UPDATE} ${id}`)
+            : res.status(304).send(`${strings_1.FAILED_UPDATE} ${id} `);
     }
     catch (err) {
         console.error(err.message);
@@ -90,13 +85,13 @@ exports.newsRouter.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0
         const query = { _id: new mongodb_1.ObjectId(id) };
         const result = yield ((_b = database_service_1.collections.news_articles) === null || _b === void 0 ? void 0 : _b.deleteOne(query));
         if (result && result.deletedCount) {
-            res.status(202).send(`Successfully removed news article with id ${id}`);
+            res.status(202).send(`${strings_1.SUCCESSFULL_REMOVE} ${id}`);
         }
         else if (!result) {
-            res.status(400).send(`Failed to remove news article with id ${id}`);
+            res.status(400).send(`${strings_1.FAILED_REMOVE}${id}`);
         }
         else if (!result.deletedCount) {
-            res.status(404).send(`News article with id ${id} does not exist`);
+            res.status(404).send(`${strings_1.NOT_EXIST_REMOVE} ${id}`);
         }
     }
     catch (err) {

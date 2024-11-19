@@ -36,6 +36,7 @@ exports.collections = void 0;
 exports.connectToDatabase = connectToDatabase;
 const mongoDB = __importStar(require("mongodb"));
 const dotenv = __importStar(require("dotenv"));
+const strings_1 = require("../constants/strings");
 exports.collections = {};
 // Initialize Connection
 function connectToDatabase() {
@@ -47,6 +48,6 @@ function connectToDatabase() {
         const db = client.db(process.env.DB_NAME);
         const newsCollection = db.collection((_b = process.env.NEWS_COLLECTION_NAME) !== null && _b !== void 0 ? _b : 'default-collection-name');
         exports.collections.news_articles = newsCollection;
-        console.log(`Successfully connected to database: ${db.databaseName} and collection: ${newsCollection.collectionName}`);
+        console.log(`${strings_1.CONNECTION_SUCCESSFUL} ${db.databaseName} and collection: ${newsCollection.collectionName}`);
     });
 }

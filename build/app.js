@@ -11,6 +11,7 @@ const routes_1 = __importDefault(require("./routes"));
 const database_service_1 = require("./services/database.service");
 const news_routes_1 = require("./routes/news.routes");
 const newsController_1 = require("./controllers/newsController");
+const strings_1 = require("./constants/strings");
 var onloadOperations;
 (function (onloadOperations) {
     onloadOperations[onloadOperations["Create"] = 0] = "Create";
@@ -29,11 +30,11 @@ app.use('/', routes_1.default);
     app.use('/news', news_routes_1.newsRouter);
     (0, newsController_1.onLoad)(onloadOperations.None);
     app.listen(port, () => {
-        console.log(`Server started at http://localhost:${port}`);
+        console.log(`${strings_1.START}${port}`);
     });
 })
     .catch((error) => {
-    console.error('Database connection failed', error);
+    console.error(strings_1.CONNECTION_FAILED, error);
     process.exit();
 });
 exports.default = app;

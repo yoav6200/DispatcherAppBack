@@ -39,7 +39,7 @@ const onLoad = (operation) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Inserted ${result.insertedCount} news articles into MongoDB`);
             }
             else {
-                console.error('Failed to insert news articles');
+                console.error(strings_1.FAILED_INSERT);
             }
         }
         else if (operation === app_1.onloadOperations.Update) {
@@ -48,7 +48,7 @@ const onLoad = (operation) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Updated ${result.modifiedCount} news articles into MongoDB`);
             }
             else {
-                console.error('Failed to Update news articles');
+                console.error(strings_1.FAILED_UPDATE_MANY);
             }
         }
         else if (operation === app_1.onloadOperations.Delete) {
@@ -57,11 +57,11 @@ const onLoad = (operation) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(`Deleted ${result.deletedCount} news articles into MongoDB`);
             }
             else {
-                console.error('Failed to delete news articles');
+                console.error(strings_1.FAILED_DELETE_MANY);
             }
         }
         else if (operation === app_1.onloadOperations.None) {
-            console.log('No operation performed');
+            console.log(strings_1.NOTHING_HAPPENED);
         }
     }
     catch (error) {
