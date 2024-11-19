@@ -1,4 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
+import {
+  EMAIL_REQUIRED,
+  ID_REQUIRED,
+  NAME_REQUIRED,
+  PASSWORD_LENGTH,
+  PASSWORD_REQUIRED,
+  VALIDATION_FAILED,
+} from '../../constants/strings';
 
 export const validateUser = (
   req: Request,
@@ -11,28 +19,28 @@ export const validateUser = (
 
   // Validate data
   if (!id) {
-    errors.push('id is required');
+    errors.push(ID_REQUIRED);
   }
 
   if (!name) {
-    errors.push('name is required');
+    errors.push(NAME_REQUIRED);
   }
 
   if (!email) {
-    errors.push('email is required');
+    errors.push(EMAIL_REQUIRED);
   }
 
   if (!password) {
-    errors.push('password cannot be empty!');
+    errors.push(PASSWORD_REQUIRED);
   } else {
     if (password.length < 8) {
-      errors.push('password must be at least 8 chars long');
+      errors.push(PASSWORD_LENGTH);
     }
   }
 
   if (errors.length) {
     res.status(422).json({
-      message: 'Validation failed',
+      message: VALIDATION_FAILED,
       errors,
     });
   } else {
