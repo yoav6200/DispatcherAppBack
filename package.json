@@ -1,9 +1,11 @@
 {
   "name": "duspatcherappback",
   "version": "1.0.0",
-  "main": "build/server.js",
+  "main": "build/app.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "build": "npx tsc -p .",
+    "start": "node .",
+    "dev": "npx nodemon ./src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -21,7 +23,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "helmet": "^8.0.0",
-    "mongoose": "^8.8.1"
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.1",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -29,6 +33,8 @@
     "@types/express": "^5.0.0",
     "@types/helmet": "^0.0.48",
     "@types/node": "^22.9.0",
+    "node-ts": "^6.1.3",
+    "nodemon": "^3.1.7",
     "typescript": "^5.6.3"
   }
 }

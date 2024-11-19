@@ -1,20 +1,37 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import router from './routes';
+import { connectToDatabase } from './services/database.service';
+import { newsRouter } from './routes/news.routes';
+import { onLoad } from './controllers/newsController';
+export enum onloadOperations {
+  Create,
+  Update,
+  Delete,
+  None,
+}
+const app = express();
+const port = 3000;
 
-// Create Express server
-const app = express(); // New express instance
-const port = 3000; // Port number
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
 
-// Express configuration
-app.use(cors()); // Enable CORS
-app.use(helmet()); // Enable Helmet
+app.use('/', router);
 
-// Start Express server
-app.listen(port, () => {
-  // Callback function when server is successfully started
-  console.log(`Server started at http://localhost:${port}`);
-});
+connectToDatabase()
+  .then(() => {
+    app.use('/news', newsRouter);
 
-// Export Express app
+    onLoad(onloadOperations.None);
+    app.listen(port, () => {
+      console.log(`Server started at http://localhost:${port}`);
+    });
+  })
+  .catch((error: Error) => {
+    console.error('Database connection failed', error);
+    process.exit();
+  });
+
 export default app;
