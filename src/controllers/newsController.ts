@@ -1,6 +1,12 @@
 import axios from 'axios';
 import mongoose, { Schema } from 'mongoose';
-import { API_URL, CONNECT_URL, TOP_HEADLINES } from '../constants/strings';
+import {
+  API_URL,
+  FAILED_DELETE_MANY,
+  FAILED_INSERT,
+  FAILED_UPDATE_MANY,
+  NOTHING_HAPPENED,
+} from '../constants/strings';
 import 'dotenv/config';
 import News from '../models/news.models';
 import { collections } from '../services/database.service';
@@ -37,7 +43,7 @@ export const onLoad = async (operation: onloadOperations): Promise<void> => {
           `Inserted ${result.insertedCount} news articles into MongoDB`
         );
       } else {
-        console.error('Failed to insert news articles');
+        console.error(FAILED_INSERT);
       }
     } else if (operation === onloadOperations.Update) {
       const result = await collections.news_articles?.updateMany(
@@ -49,7 +55,7 @@ export const onLoad = async (operation: onloadOperations): Promise<void> => {
           `Updated ${result.modifiedCount} news articles into MongoDB`
         );
       } else {
-        console.error('Failed to Update news articles');
+        console.error(FAILED_UPDATE_MANY);
       }
     } else if (operation === onloadOperations.Delete) {
       const result = await collections.news_articles?.deleteMany({});
@@ -58,10 +64,10 @@ export const onLoad = async (operation: onloadOperations): Promise<void> => {
           `Deleted ${result.deletedCount} news articles into MongoDB`
         );
       } else {
-        console.error('Failed to delete news articles');
+        console.error(FAILED_DELETE_MANY);
       }
     } else if (operation === onloadOperations.None) {
-      console.log('No operation performed');
+      console.log(NOTHING_HAPPENED);
     }
   } catch (error) {
     console.error(error);

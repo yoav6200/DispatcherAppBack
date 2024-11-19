@@ -1,5 +1,6 @@
 import * as mongoDB from 'mongodb';
 import * as dotenv from 'dotenv';
+import { CONNECTION_SUCCESSFUL } from '../constants/strings';
 
 export const collections: { news_articles?: mongoDB.Collection } = {};
 // Initialize Connection
@@ -19,6 +20,6 @@ export async function connectToDatabase() {
   collections.news_articles = newsCollection;
 
   console.log(
-    `Successfully connected to database: ${db.databaseName} and collection: ${newsCollection.collectionName}`
+    `${CONNECTION_SUCCESSFUL} ${db.databaseName} and collection: ${newsCollection.collectionName}`
   );
 }

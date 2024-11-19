@@ -5,6 +5,7 @@ import router from './routes';
 import { connectToDatabase } from './services/database.service';
 import { newsRouter } from './routes/news.routes';
 import { onLoad } from './controllers/newsController';
+import { CONNECTION_FAILED, START } from './constants/strings';
 export enum onloadOperations {
   Create,
   Update,
@@ -26,11 +27,11 @@ connectToDatabase()
 
     onLoad(onloadOperations.None);
     app.listen(port, () => {
-      console.log(`Server started at http://localhost:${port}`);
+      console.log(`${START}${port}`);
     });
   })
   .catch((error: Error) => {
-    console.error('Database connection failed', error);
+    console.error(CONNECTION_FAILED, error);
     process.exit();
   });
 
