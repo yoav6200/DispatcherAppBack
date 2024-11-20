@@ -49,7 +49,7 @@ export const insertNewsArticles = async (newsArticles: News[]) => {
 export const updateNewsArticles = async (newsArticles: News[]) => {
   const result = await collections.news_articles?.updateMany(
     {},
-    { $set: newsArticles }
+    { $set: { articles: newsArticles } }
   );
 
   if (result) {

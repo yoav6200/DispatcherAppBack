@@ -1,25 +1,18 @@
 import express from 'express';
-import {
-  fetchAllNews,
-  fetchNewsById,
-  createNews,
-  updateNewsById,
-  deleteNewsById,
-} from '../handlers/news.handlers';
-import { loadNewsData } from '../controllers/controller';
+import { newsController } from '../controllers/news.Controller';
 
 export const newsRouter = express.Router();
 
 newsRouter.use(express.json());
 
-newsRouter.get('/', fetchAllNews);
+newsRouter.get('/', newsController.getNews);
 
-newsRouter.get('/:id', fetchNewsById);
+newsRouter.get('/:id', newsController.getNewsById);
 
-newsRouter.post('/', createNews);
+newsRouter.post('/', newsController.createNews);
 
-newsRouter.put('/:id', updateNewsById);
+newsRouter.put('/:id', newsController.updateNews);
 
-newsRouter.delete('/:id', deleteNewsById);
+newsRouter.patch('/:id', newsController.updateNewsPartial);
 
-newsRouter.get('/load', loadNewsData);
+newsRouter.delete('/:id', newsController.deleteNewsById);

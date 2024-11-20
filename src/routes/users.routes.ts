@@ -1,19 +1,12 @@
-import { Router } from 'express';
-import {
-  getUsersHandler,
-  getUserByIdHandler,
-  createUserHandler,
-  updateUserHandler,
-  deleteUserHandler,
-} from '../handlers/users.handlers';
-import { validateUser } from '../utils/validations/users.validations';
+import express from 'express';
+import { usersController } from '../controllers/users.controller';
 
-const router = Router();
+export const usersRouter = express.Router();
 
-router.get('/', getUsersHandler);
-router.get('/:id', getUserByIdHandler);
-router.post('/', validateUser, createUserHandler);
-router.put('/:id', validateUser, updateUserHandler);
-router.delete('/:id', deleteUserHandler);
-
-export default router;
+usersRouter.use(express.json());
+usersRouter.get('/', usersController.getUsers);
+usersRouter.get('/:id', usersController.getUserById);
+usersRouter.post('/', usersController.createUser);
+usersRouter.put('/:id', usersController.updateUser);
+usersRouter.patch('/:id', usersController.updateUserPartial);
+usersRouter.delete('/:id', usersController.deleteUser);

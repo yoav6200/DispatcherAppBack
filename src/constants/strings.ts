@@ -38,3 +38,8 @@ export const UPDATE: string = 'Update';
 export const DELETE: string = 'Delete';
 export const INVALID_OPERATION: string = 'Invalid or missing operation type';
 export const UNKNOWN_ERROR: string = 'An unknown error occurred';
+export const INVALID_EMAIL: string = 'Invalid email format';
+export const PASSWORD_UNMATCH: string = 'Passwords do not match';
+export const REQUEST_BODY_INVALID: string = 'Request body is invalid';
+export const FAILED_UPDATE_REQUEST: string =
+  'News article not updated , check your request';
