@@ -40,7 +40,7 @@ app.use('/', routes_1.default);
     console.log(`${strings_1.DATABASE_CONNECTED}`);
     // Call onLoad during startup
     try {
-        yield (0, news_service_1.onLoad)(onloadOperations.None); // Change the operation as needed
+        yield (0, news_service_1.onLoad)(onloadOperations.None);
         console.log('Initial news data operation completed');
     }
     catch (error) {

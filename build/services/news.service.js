@@ -14,12 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onLoad = exports.deleteNewsArticles = exports.updateNewsArticles = exports.insertNewsArticles = exports.fetchNewsArticles = void 0;
 const axios_1 = __importDefault(require("axios"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const database_service_1 = require("../services/database.service");
 const strings_1 = require("../constants/strings");
 const news_models_1 = __importDefault(require("../models/news.models"));
 const app_1 = require("../app");
-const API_URL = process.env.API_URL;
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const apikey = process.env.APP_API_KEY;
 const fetchNewsArticles = (apiUrl) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(apiUrl);
@@ -67,7 +67,7 @@ const deleteNewsArticles = () => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteNewsArticles = deleteNewsArticles;
 const onLoad = (operation) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const apiUrl = `${API_URL}${apikey}`;
+        const apiUrl = `${strings_1.API_URL}${apikey}`;
         const newsArticles = yield (0, exports.fetchNewsArticles)(apiUrl);
         switch (operation) {
             case app_1.onloadOperations.Create:
@@ -86,9 +86,6 @@ const onLoad = (operation) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error(error.message);
-    }
-    finally {
-        mongoose_1.default.disconnect();
     }
 });
 exports.onLoad = onLoad;

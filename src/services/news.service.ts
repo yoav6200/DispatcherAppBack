@@ -1,7 +1,8 @@
 import axios from 'axios';
-import mongoose from 'mongoose';
+
 import { collections } from '../services/database.service';
 import {
+  API_URL,
   FAILED_DELETE_MANY,
   FAILED_INSERT,
   FAILED_UPDATE_MANY,
@@ -9,8 +10,9 @@ import {
 } from '../constants/strings';
 import News from '../models/news.models';
 import { onloadOperations } from '../app';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const API_URL = process.env.API_URL;
 const apikey = process.env.APP_API_KEY;
 
 export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
@@ -88,7 +90,5 @@ export const onLoad = async (operation: onloadOperations): Promise<void> => {
     }
   } catch (error: any) {
     console.error(error.message);
-  } finally {
-    mongoose.disconnect();
   }
 };

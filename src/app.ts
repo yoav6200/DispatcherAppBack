@@ -35,7 +35,7 @@ connectToDatabase()
 
     // Call onLoad during startup
     try {
-      await onLoad(onloadOperations.None); // Change the operation as needed
+      await onLoad(onloadOperations.None);
       console.log('Initial news data operation completed');
     } catch (error) {
       console.error('Error during initial data load:', error);
