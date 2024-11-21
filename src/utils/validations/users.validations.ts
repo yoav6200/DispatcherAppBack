@@ -48,3 +48,37 @@ export const validateUser = (
     next();
   }
 };
+
+export const validateUserPartial = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body;
+
+  const errors: string[] = [];
+
+  if (!email && !password) {
+    errors.push('Either email or password is required');
+  }
+
+  if (email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      errors.push(INVALID_EMAIL);
+    }
+  }
+
+  if (password && password.length < 8) {
+    errors.push(PASSWORD_LENGTH);
+  }
+
+  if (errors.length) {
+    res.status(422).json({
+      message: VALIDATION_FAILED,
+      errors,
+    });
+  } else {
+    return next();
+  }
+};
