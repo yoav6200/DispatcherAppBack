@@ -1,5 +1,6 @@
 import { MongoClient, Collection } from 'mongodb';
 import dotenv from 'dotenv';
+import { fetchUsersFromFireBase } from '../utils/firebase/fb_intergration_with_mongo';
 dotenv.config();
 const DB_CONN_STRING = process.env.DB_CONN_STRING;
 const url = new URL(DB_CONN_STRING!);
@@ -22,7 +23,7 @@ export const connectToDatabase = async () => {
     // Initialize collections
     collections.news_articles = db.collection('news_articles');
     collections.users = db.collection('users');
-
+    fetchUsersFromFireBase(db, collections.users!);
     console.log('Connected to the database!');
   } catch (error) {
     console.error('Error connecting to the database', error);
