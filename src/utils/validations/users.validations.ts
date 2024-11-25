@@ -4,8 +4,6 @@ import {
   EMAIL_REQUIRED,
   INVALID_EMAIL,
   PASSWORD_LENGTH,
-  PASSWORD_REQUIRED,
-  PASSWORD_UNMATCH,
   VALIDATION_FAILED,
 } from '../../constants/strings';
 
@@ -13,14 +11,6 @@ const userSchema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': INVALID_EMAIL,
     'any.required': EMAIL_REQUIRED,
-  }),
-  password: Joi.string().min(8).required().messages({
-    'string.min': PASSWORD_LENGTH,
-    'any.required': PASSWORD_REQUIRED,
-  }),
-  password2: Joi.string().valid(Joi.ref('password')).required().messages({
-    'any.only': PASSWORD_UNMATCH,
-    'any.required': PASSWORD_REQUIRED,
   }),
 });
 

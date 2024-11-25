@@ -1,4 +1,4 @@
-export default interface News {
+export interface News {
   title: String;
   description: String;
   url: String;

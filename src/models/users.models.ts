@@ -1,3 +1,3 @@
-export default interface Users {
+export interface Users {
   email: String;
 }

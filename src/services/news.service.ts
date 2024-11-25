@@ -8,7 +8,7 @@ import {
   FAILED_UPDATE_MANY,
   NOTHING_HAPPENED,
 } from '../constants/strings';
-import News from '../models/news.models';
+import { News } from '../models/news.models';
 import { onloadOperations } from '../app';
 import dotenv from 'dotenv';
 dotenv.config();

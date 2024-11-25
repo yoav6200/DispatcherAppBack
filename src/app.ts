@@ -11,6 +11,7 @@ import {
   START,
 } from './constants/strings';
 import { on } from 'events';
+import helmet from 'helmet';
 
 export enum onloadOperations {
   Create = 'Create',
@@ -23,7 +24,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
-
+app.use(helmet());
 app.use(express.json());
 
 app.use('/', router);
