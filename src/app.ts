@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
+
 import router from './routes';
 import { connectToDatabase } from './services/database.service';
 import { newsRouter } from './routes/news.routes';
@@ -10,6 +10,7 @@ import {
   DATABASE_CONNECTED,
   START,
 } from './constants/strings';
+import { on } from 'events';
 
 export enum onloadOperations {
   Create = 'Create',
@@ -22,12 +23,12 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
-app.use(helmet());
+
 app.use(express.json());
 
 app.use('/', router);
-
-connectToDatabase()
+let operation = onloadOperations.None;
+connectToDatabase(operation)
   .then(async () => {
     app.use('/news', newsRouter);
 
@@ -35,7 +36,7 @@ connectToDatabase()
 
     // Call onLoad during startup
     try {
-      await onLoad(onloadOperations.None);
+      await onLoad(operation);
       console.log('Initial news data operation completed');
     } catch (error) {
       console.error('Error during initial data load:', error);

@@ -1,3 +1,3 @@
-export default class Users {
-  constructor(public email: String, public password: String) {}
+export default interface Users {
+  email: String;
 }

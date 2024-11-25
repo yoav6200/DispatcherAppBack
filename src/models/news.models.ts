@@ -1,11 +1,9 @@
-export default class News {
-  constructor(
-    public title: String,
-    public description: String,
-    public url: String,
-    public urlToImage: String,
-    public publishedAt: String,
-    public author: String,
-    public content: String
-  ) {}
+export default interface News {
+  title: String;
+  description: String;
+  url: String;
+  urlToImage: String;
+  publishedAt: String;
+  author: String;
+  content: String;
 }

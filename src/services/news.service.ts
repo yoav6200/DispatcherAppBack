@@ -23,17 +23,15 @@ export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
   }
 
   const data = response.data;
-  return data.articles.map((article: any) => {
-    return new News(
-      article.title,
-      article.description,
-      article.url,
-      article.urlToImage,
-      article.publishedAt,
-      article.author,
-      article.content
-    );
-  });
+  return data.articles.map((article: any) => ({
+    title: article.title,
+    description: article.description,
+    url: article.url,
+    urlToImage: article.urlToImage,
+    publishedAt: article.publishedAt,
+    author: article.author,
+    content: article.content,
+  }));
 };
 
 export const insertNewsArticles = async (newsArticles: News[]) => {

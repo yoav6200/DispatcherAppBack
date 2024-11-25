@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import { Request, Response, NextFunction } from 'express';
 import {
   EMAIL_REQUIRED,
@@ -8,41 +9,40 @@ import {
   VALIDATION_FAILED,
 } from '../../constants/strings';
 
+const userSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.email': INVALID_EMAIL,
+    'any.required': EMAIL_REQUIRED,
+  }),
+  password: Joi.string().min(8).required().messages({
+    'string.min': PASSWORD_LENGTH,
+    'any.required': PASSWORD_REQUIRED,
+  }),
+  password2: Joi.string().valid(Joi.ref('password')).required().messages({
+    'any.only': PASSWORD_UNMATCH,
+    'any.required': PASSWORD_REQUIRED,
+  }),
+});
+
+const userPartialSchema = Joi.object({
+  email: Joi.string().email().messages({
+    'string.email': INVALID_EMAIL,
+  }),
+  password: Joi.string().min(8).messages({
+    'string.min': PASSWORD_LENGTH,
+  }),
+}).or('email', 'password');
+
 export const validateUser = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password, password2 } = req.body;
-
-  const errors: string[] = [];
-
-  if (!email) {
-    errors.push(EMAIL_REQUIRED);
-  } else {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      errors.push(INVALID_EMAIL);
-    }
-  }
-
-  if (!password) {
-    errors.push(PASSWORD_REQUIRED);
-  } else {
-    if (password.length < 8) {
-      errors.push(PASSWORD_LENGTH);
-    }
-  }
-
-  if (password2) {
-    if (password !== password2) {
-      errors.push(PASSWORD_UNMATCH);
-    }
-  }
-  if (errors.length) {
+  const { error } = userSchema.validate(req.body);
+  if (error) {
     res.status(422).json({
       message: VALIDATION_FAILED,
-      errors,
+      errors: error.details.map((detail) => detail.message),
     });
   } else {
     next();
@@ -54,31 +54,13 @@ export const validateUserPartial = (
   res: Response,
   next: NextFunction
 ) => {
-  const { email, password } = req.body;
-
-  const errors: string[] = [];
-
-  if (!email && !password) {
-    errors.push('Either email or password is required');
-  }
-
-  if (email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailRegex.test(email)) {
-      errors.push(INVALID_EMAIL);
-    }
-  }
-
-  if (password && password.length < 8) {
-    errors.push(PASSWORD_LENGTH);
-  }
-
-  if (errors.length) {
+  const { error } = userPartialSchema.validate(req.body);
+  if (error) {
     res.status(422).json({
       message: VALIDATION_FAILED,
-      errors,
+      errors: error.details.map((detail) => detail.message),
     });
   } else {
-    return next();
+    next();
   }
 };

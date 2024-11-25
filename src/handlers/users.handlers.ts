@@ -46,8 +46,8 @@ export const UsersHandler = {
   createUser: async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
-      const hashedPassword = await hashPassword(password);
-      const newUser = new Users(email, hashedPassword);
+      // const hashedPassword = await hashPassword(password);
+      const newUser: Users = { email };
       const result = await collections.users?.insertOne(newUser);
 
       if (result) {
@@ -70,8 +70,8 @@ export const UsersHandler = {
 
     try {
       const { email, password } = req.body;
-      const hashedPassword = await hashPassword(password);
-      const updatedUser = new Users(email, hashedPassword);
+      // const hashedPassword = await hashPassword(password);
+      const updatedUser: Users = { email };
 
       const result = await collections.users?.updateOne(
         { _id: new ObjectId(id) },
