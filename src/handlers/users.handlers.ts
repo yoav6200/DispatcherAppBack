@@ -9,6 +9,8 @@ import {
   USER_UPDATED,
 } from '../constants/strings';
 
+import { hashPassword } from '../utils/validations/hashPassword';
+
 export const UsersHandler = {
   getUsers: async (_req: Request, res: Response): Promise<void> => {
     try {
@@ -44,7 +46,8 @@ export const UsersHandler = {
   createUser: async (req: Request, res: Response): Promise<void> => {
     try {
       const { email, password } = req.body;
-      const newUser = new Users(email, password);
+      const hashedPassword = await hashPassword(password);
+      const newUser = new Users(email, hashedPassword);
       const result = await collections.users?.insertOne(newUser);
 
       if (result) {
@@ -67,7 +70,8 @@ export const UsersHandler = {
 
     try {
       const { email, password } = req.body;
-      const updatedUser = new Users(email, password);
+      const hashedPassword = await hashPassword(password);
+      const updatedUser = new Users(email, hashedPassword);
 
       const result = await collections.users?.updateOne(
         { _id: new ObjectId(id) },
@@ -90,7 +94,11 @@ export const UsersHandler = {
   updateUserPartial: async (req: Request, res: Response): Promise<void> => {
     const userId = req.params.id;
     const updatedProperties = req.body;
-
+    if (updatedProperties.password) {
+      updatedProperties.password = await hashPassword(
+        updatedProperties.password
+      );
+    }
     try {
       const user = await collections.users?.findOne({
         _id: new ObjectId(userId),

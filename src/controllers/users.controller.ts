@@ -1,18 +1,17 @@
 import { Request, Response } from 'express';
 import { UsersHandler } from '../handlers/users.handlers';
-import { validateUser } from '../utils/validations/users.validations';
+import {
+  validateUser,
+  validateUserPartial,
+} from '../utils/validations/users.validations';
 
 export const usersController = {
   async getUsers(req: Request, res: Response) {
-    validateUser(req, res, () => {
-      UsersHandler.getUsers(req, res);
-    });
+    UsersHandler.getUsers(req, res);
   },
 
   async getUserById(req: Request, res: Response) {
-    validateUser(req, res, () => {
-      UsersHandler.getUserById(req, res);
-    });
+    UsersHandler.getUserById(req, res);
   },
 
   async createUser(req: Request, res: Response) {
@@ -28,7 +27,7 @@ export const usersController = {
   },
 
   async updateUserPartial(req: Request, res: Response) {
-    validateUser(req, res, () => {
+    validateUserPartial(req, res, () => {
       UsersHandler.updateUserPartial(req, res);
     });
   },
