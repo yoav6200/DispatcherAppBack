@@ -1,3 +1,7 @@
+import { News } from './news.models';
 export interface Users {
-  email: String;
+  name: string | null;
+  email: string;
+  uid: string;
+  favoritenewsItems: News[];
 }

@@ -1,5 +1,8 @@
+import { News } from '../../models/news.models';
+
 export interface CustomizedUser {
   uid: string;
   email: string | undefined;
-  passwordHash?: string;
+  name: string | undefined;
+  favoriteItems: News[];
 }

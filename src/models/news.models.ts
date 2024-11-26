@@ -1,9 +1,9 @@
 export interface News {
-  title: String;
-  description: String;
-  url: String;
-  urlToImage: String;
-  publishedAt: String;
-  author: String;
-  content: String;
+  title: string;
+  description: string;
+  url: string;
+  urlToImage: string;
+  publishedAt: string;
+  author: string;
+  content: string;
 }
