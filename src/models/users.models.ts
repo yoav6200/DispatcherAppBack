@@ -1,7 +1,7 @@
 import { News } from './news.models';
 export interface Users {
   name: string | null;
-  email: string;
+  email: string | undefined;
   uid: string;
-  favoritenewsItems: News[];
+  favoriteItems: string[];
 }

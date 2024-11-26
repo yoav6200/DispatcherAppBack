@@ -10,6 +10,7 @@ import {
 } from '../constants/strings';
 
 import { hashPassword } from '../utils/validations/hashPassword';
+import { News } from '../models/news.models';
 
 export const getAllUsers = async (
   _req: Request,
@@ -55,7 +56,7 @@ export const createOneUser = async (
   try {
     const { email, name, uid } = req.body;
     // const hashedPassword = await hashPassword(password);
-    const newUser: Users = { email, name, uid, favoritenewsItems: [] };
+    const newUser: Users = { email, name, uid, favoriteItems: [] };
     const result = await collections.users?.insertOne(newUser);
 
     if (result) {
@@ -82,7 +83,7 @@ export const updateOneUser = async (
   try {
     const { email, name, uid } = req.body;
     // const hashedPassword = await hashPassword(password);
-    const updatedUser: Users = { email, name, uid, favoritenewsItems: [] };
+    const updatedUser: Users = { email, name, uid, favoriteItems: [] };
 
     const result = await collections.users?.updateOne(
       { _id: new ObjectId(id) },
@@ -152,6 +153,31 @@ export const deleteUserById = async (
     }
   } catch (error) {
     res.status(500).json({
+      message:
+        error instanceof Error ? error.message : 'An unknown error occurred',
+    });
+  }
+};
+
+export const addUserFavoriteItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const userId = req.params.id;
+  const newsItemTitle = req.body.newsItemTitle;
+
+  try {
+    // Add the news item title to the user's favorites
+    await collections.users?.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $addToSet: { favoriteItems: newsItemTitle },
+      }
+    );
+
+    res.send({ message: 'Favorite item added successfully' });
+  } catch (error) {
+    res.status(500).send({
       message:
         error instanceof Error ? error.message : 'An unknown error occurred',
     });

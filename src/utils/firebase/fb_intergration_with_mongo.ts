@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import { Collection, Db } from 'mongodb';
-import { CustomizedUser } from './CustomizedUser';
+import { Users } from '../../models/users.models';
 
 const serviceAccount = require('../../../firebase-service-file/FireBaseserviceAcoountKey.json');
 admin.initializeApp({
@@ -17,7 +17,7 @@ export async function fetchUsersFromFireBase(
     const customizedUsers = [];
     for (const user of users.users) {
       const userRecord = await admin.auth().getUser(user.uid);
-      const customizedUser: CustomizedUser = {
+      const customizedUser: Users = {
         uid: userRecord.uid,
         email: userRecord.email,
         name: '',

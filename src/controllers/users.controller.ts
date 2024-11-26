@@ -6,6 +6,7 @@ import {
   updateOneUser,
   updateOneUserPartial,
   deleteUserById,
+  addUserFavoriteItem,
 } from '../handlers/users.handlers';
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
@@ -41,4 +42,11 @@ export const deleteUser = async (
   res: Response
 ): Promise<void> => {
   deleteUserById(req, res);
+};
+
+export const addFavoriteItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  addUserFavoriteItem(req, res);
 };

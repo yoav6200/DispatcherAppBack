@@ -11,6 +11,7 @@ import {
   updateUserPartial,
   deleteUser,
   getUserById,
+  addFavoriteItem,
 } from '../controllers/users.controller';
 
 export const usersRouter = express.Router();
@@ -26,3 +27,4 @@ usersRouter.post('/', validateUser, createUser);
 usersRouter.put('/:id', validateUserPartial, updateUser);
 usersRouter.patch('/:id', validateUserPartial, updateUserPartial);
 usersRouter.delete('/:id', deleteUser);
+usersRouter.post('/:id/favorite', addFavoriteItem);

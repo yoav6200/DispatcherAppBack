@@ -4,6 +4,7 @@ export interface News {
   url: string;
   urlToImage: string;
   publishedAt: string;
+  id: number;
   author: string;
   content: string;
 }
