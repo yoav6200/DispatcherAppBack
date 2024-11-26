@@ -6,41 +6,36 @@ import {
   SUCCESSFULL_REMOVE,
   UNKNOWN_ERROR,
 } from '../constants/strings';
-import { NewsHandler } from '../handlers/news.handlers';
+import {
+  getAllNews,
+  getNewsById,
+  createNews,
+  updateNewsById,
+  updateNewsPartial,
+  deleteNewsById,
+} from '../handlers/news.handlers';
 
 export const newsController = {
   async getNews(req: Request, res: Response) {
-    NewsHandler.getAllNews(req, res).then((news) => {
-      res.json(news);
-    });
+    getAllNews(req, res).then((news) => {});
   },
 
   async getNewsById(req: Request, res: Response) {
-    NewsHandler.getNewsById(req, res).then((news) => {
-      res.json(news);
-    });
+    getNewsById(req, res).then((news) => {});
   },
 
   async createNews(req: Request, res: Response) {
-    NewsHandler.createNews(req, res).then((news) => {
-      res.json(news);
-    });
+    createNews(req, res).then((news) => {});
   },
 
   async updateNews(req: Request, res: Response) {
-    const news = await NewsHandler.updateNewsById(req, res).then((news) => {
-      res.json(news);
-    });
+    const news = await updateNewsById(req, res).then((news) => {});
   },
   async updateNewsPartial(req: Request, res: Response) {
-    const news = await NewsHandler.updateNewsPartial(req, res).then((news) => {
-      res.json(news);
-    });
+    const news = await updateNewsPartial(req, res).then((news) => {});
   },
 
   async deleteNewsById(req: Request, res: Response) {
-    const news = await NewsHandler.deleteNewsById(req, res).then((news) => {
-      res.json(news);
-    });
+    const news = await deleteNewsById(req, res).then((news) => {});
   },
 };

@@ -1,40 +1,35 @@
 import { Request, Response } from 'express';
-import { UsersHandler } from '../handlers/users.handlers';
 import {
-  validateUser,
-  validateUserPartial,
-} from '../utils/validations/users.validations';
+  createUser,
+  deleteUser,
+  getUsers,
+  updateUser,
+  updateUserPartial,
+  getUsersbyId,
+} from '../handlers/users.handlers';
 
 export const usersController = {
   async getUsers(req: Request, res: Response) {
-    UsersHandler.getUsers(req, res);
+    getUsers(req, res);
   },
 
   async getUserById(req: Request, res: Response) {
-    UsersHandler.getUserById(req, res);
+    getUsersbyId(req, res);
   },
 
   async createUser(req: Request, res: Response) {
-    validateUser(req, res, () => {
-      UsersHandler.createUser(req, res);
-    });
+    createUser(req, res);
   },
 
   async updateUser(req: Request, res: Response) {
-    validateUser(req, res, () => {
-      UsersHandler.updateUser(req, res);
-    });
+    updateUser(req, res);
   },
 
   async updateUserPartial(req: Request, res: Response) {
-    validateUserPartial(req, res, () => {
-      UsersHandler.updateUserPartial(req, res);
-    });
+    updateUserPartial(req, res);
   },
 
   async deleteUser(req: Request, res: Response) {
-    validateUser(req, res, () => {
-      UsersHandler.deleteUser(req, res);
-    });
+    deleteUser(req, res);
   },
 };
