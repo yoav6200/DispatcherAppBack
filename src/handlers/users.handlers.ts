@@ -52,7 +52,7 @@ export const createUser = async (
   try {
     const { email, name, uid } = req.body;
     // const hashedPassword = await hashPassword(password);
-    const newUser: Users = { email, name, uid, FavoritenewsItems: [] };
+    const newUser: Users = { email, name, uid, favoritenewsItems: [] };
     const result = await collections.users?.insertOne(newUser);
 
     if (result) {
@@ -79,7 +79,7 @@ export const updateUser = async (
   try {
     const { email, name, uid } = req.body;
     // const hashedPassword = await hashPassword(password);
-    const updatedUser: Users = { email, name, uid, FavoritenewsItems: [] };
+    const updatedUser: Users = { email, name, uid, favoritenewsItems: [] };
 
     const result = await collections.users?.updateOne(
       { _id: new ObjectId(id) },

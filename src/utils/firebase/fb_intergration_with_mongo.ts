@@ -24,10 +24,10 @@ export async function fetchUsersFromFireBase(
       const customizedUser: CustomizedUser = {
         uid: userRecord.uid,
         email: userRecord.email,
+        name: '',
+        favoriteItems: [],
       };
-      if (userRecord.passwordHash) {
-        customizedUser.passwordHash = userRecord.passwordHash;
-      }
+
       customizedUsers.push(customizedUser);
     }
     await usersCollection.insertMany(customizedUsers);
