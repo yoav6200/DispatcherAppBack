@@ -12,6 +12,10 @@ const userSchema = Joi.object({
     'string.email': INVALID_EMAIL,
     'any.required': EMAIL_REQUIRED,
   }),
+  name: Joi.string().allow('').messages({}),
+  uid: Joi.string().required().messages({
+    'any.required': 'UID is required',
+  }),
 });
 
 const userPartialSchema = Joi.object({
@@ -21,7 +25,9 @@ const userPartialSchema = Joi.object({
   password: Joi.string().min(8).messages({
     'string.min': PASSWORD_LENGTH,
   }),
-}).or('email', 'password');
+  name: Joi.string().allow('').messages({}),
+  uid: Joi.string().messages({}),
+}).or('email', 'password', 'name', 'uid');
 
 export const validateUser = (
   req: Request,
