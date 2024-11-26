@@ -1,35 +1,44 @@
 import { Request, Response } from 'express';
 import {
-  createUser,
-  deleteUser,
-  getUsers,
-  updateUser,
-  updateUserPartial,
   getUsersbyId,
+  getAllUsers,
+  createOneUser,
+  updateOneUser,
+  updateOneUserPartial,
+  deleteUserById,
 } from '../handlers/users.handlers';
 
-export const usersController = {
-  async getUsers(req: Request, res: Response) {
-    getUsers(req, res);
-  },
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  getAllUsers(req, res);
+};
+export const getUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  getUsersbyId(req, res);
+};
 
-  async getUserById(req: Request, res: Response) {
-    getUsersbyId(req, res);
-  },
-
-  async createUser(req: Request, res: Response) {
-    createUser(req, res);
-  },
-
-  async updateUser(req: Request, res: Response) {
-    updateUser(req, res);
-  },
-
-  async updateUserPartial(req: Request, res: Response) {
-    updateUserPartial(req, res);
-  },
-
-  async deleteUser(req: Request, res: Response) {
-    deleteUser(req, res);
-  },
+export const createUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  createOneUser(req, res);
+};
+export const updateUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  updateOneUser(req, res);
+};
+export const updateUserPartial = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  updateOneUserPartial(req, res);
+};
+export const deleteUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  deleteUserById(req, res);
 };

@@ -29,7 +29,7 @@ export const getAllNews = async (
   }
 };
 
-export const getNewsById = async (
+export const getOneNewsById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -50,7 +50,7 @@ export const getNewsById = async (
     res.status(500).send(`${UNABLE_FIND} ${id}`);
   }
 };
-export const createNews = async (
+export const createNewsArticle = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -88,7 +88,7 @@ export const updateNewsById = async (
   }
 };
 
-export const updateNewsPartial = async (
+export const updateNewsArticlePartial = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -116,7 +116,7 @@ export const updateNewsPartial = async (
   }
 };
 
-export const deleteNewsById = async (
+export const deleteNewsArticleById = async (
   req: Request,
   res: Response
 ): Promise<void> => {

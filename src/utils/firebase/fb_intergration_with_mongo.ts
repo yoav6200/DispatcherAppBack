@@ -7,10 +7,6 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-const mongoUrl = 'mongodb://localhost:27017';
-const dbName = 'your_database_name';
-const collectionName = 'users';
-
 export async function fetchUsersFromFireBase(
   db: Db,
   usersCollection: Collection

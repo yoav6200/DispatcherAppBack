@@ -11,7 +11,10 @@ import {
 
 import { hashPassword } from '../utils/validations/hashPassword';
 
-export const getUsers = async (_req: Request, res: Response): Promise<void> => {
+export const getAllUsers = async (
+  _req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const users = await collections.users?.find({}).toArray();
     res.status(200).json({ users });
@@ -45,7 +48,7 @@ export const getUsersbyId = async (
   }
 };
 
-export const createUser = async (
+export const createOneUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -70,7 +73,7 @@ export const createUser = async (
   }
 };
 
-export const updateUser = async (
+export const updateOneUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -98,7 +101,7 @@ export const updateUser = async (
     });
   }
 };
-export const updateUserPartial = async (
+export const updateOneUserPartial = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -131,7 +134,7 @@ export const updateUserPartial = async (
   }
 };
 
-export const deleteUser = async (
+export const deleteUserById = async (
   req: Request,
   res: Response
 ): Promise<void> => {

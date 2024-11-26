@@ -1,9 +1,17 @@
 import express, { Request, Response } from 'express';
-import { usersController } from '../controllers/users.controller';
+
 import {
   validateUser,
   validateUserPartial,
 } from '../utils/validations/users.validations';
+import {
+  getUsers,
+  createUser,
+  updateUser,
+  updateUserPartial,
+  deleteUser,
+  getUserById,
+} from '../controllers/users.controller';
 
 export const usersRouter = express.Router();
 
@@ -12,13 +20,9 @@ usersRouter.use((req: Request, res: Response, next) => {
   console.log('At Middleware', req.body);
   next();
 });
-usersRouter.get('/', usersController.getUsers);
-usersRouter.get('/:id', usersController.getUserById);
-usersRouter.post('/', validateUser, usersController.createUser);
-usersRouter.put('/:id', validateUserPartial, usersController.updateUser);
-usersRouter.patch(
-  '/:id',
-  validateUserPartial,
-  usersController.updateUserPartial
-);
-usersRouter.delete('/:id', usersController.deleteUser);
+usersRouter.get('/', getUsers);
+usersRouter.get('/:id', getUserById);
+usersRouter.post('/', validateUser, createUser);
+usersRouter.put('/:id', validateUserPartial, updateUser);
+usersRouter.patch('/:id', validateUserPartial, updateUserPartial);
+usersRouter.delete('/:id', deleteUser);

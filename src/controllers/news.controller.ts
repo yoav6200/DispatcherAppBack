@@ -1,41 +1,48 @@
 import { onloadOperations } from '../app';
 import { Request, Response } from 'express';
 import { onLoad } from '../services/news.service';
-import {
-  INVALID_OPERATION,
-  SUCCESSFULL_REMOVE,
-  UNKNOWN_ERROR,
-} from '../constants/strings';
+
 import {
   getAllNews,
-  getNewsById,
-  createNews,
+  getOneNewsById,
+  createNewsArticle,
   updateNewsById,
-  updateNewsPartial,
-  deleteNewsById,
+  updateNewsArticlePartial,
+  deleteNewsArticleById,
 } from '../handlers/news.handlers';
 
-export const newsController = {
-  async getNews(req: Request, res: Response) {
-    getAllNews(req, res).then((news) => {});
-  },
+export const getNews = async (req: Request, res: Response): Promise<void> => {
+  getAllNews(req, res).then((news) => {});
+};
+export const getNewsById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  getOneNewsById(req, res).then((news) => {});
+};
 
-  async getNewsById(req: Request, res: Response) {
-    getNewsById(req, res).then((news) => {});
-  },
+export const createNews = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  createNewsArticle(req, res).then((news) => {});
+};
+export const updateNews = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const news = await updateNewsById(req, res).then((news) => {});
+};
 
-  async createNews(req: Request, res: Response) {
-    createNews(req, res).then((news) => {});
-  },
-
-  async updateNews(req: Request, res: Response) {
-    const news = await updateNewsById(req, res).then((news) => {});
-  },
-  async updateNewsPartial(req: Request, res: Response) {
-    const news = await updateNewsPartial(req, res).then((news) => {});
-  },
-
-  async deleteNewsById(req: Request, res: Response) {
-    const news = await deleteNewsById(req, res).then((news) => {});
-  },
+export const updateNewsPartial = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const news = await updateNewsArticlePartial(req, res).then((news) => {});
+};
+export const deleteNewsById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const news = await deleteNewsArticleById(req, res).then((news) => {});
 };
