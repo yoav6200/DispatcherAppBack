@@ -1,8 +1,9 @@
-$DispacherAppBackend
+DispacherAppBackend
 ========
 
-$DispacherApp helps the user to search,filter and choose his favorite news articles, along with a user-friendly application.
-$DispacherApp Backend was created to deal with all the data that travels between the user app and the server side.
+DispacherApp helps the user to search,filter and choose his favorite news articles, along with a user-friendly application.
+DispacherApp Backend was created to deal with all the data that travels between the user app and the server side.
+========
 Features
 --------
 
