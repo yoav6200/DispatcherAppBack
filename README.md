@@ -9,15 +9,7 @@ Features
 - Fetch news and users, create, update and delete news and users using mongoDb collections.
 - Make things more efficient 
 
-Usage
-------------
 
-You can view the API documentation here:
-
-[API Documentation](public/apidoc/index.html)
-
-Contribute
-----------
 
 
 - Front App Source Code: [github.com/$project/$project](https://github.com/yoav6200/DispacherApp.git)

@@ -1,23 +1,20 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
-import { collections } from '../services/database.service';
-import { Users } from '../models/users.models';
+import { User } from '../models/users.models';
 import {
   USER_CREATED,
   USER_DELETED,
   USER_NOT_FOUND,
   USER_UPDATED,
 } from '../constants/strings';
-
 import { hashPassword } from '../utils/validations/hashPassword';
-import { News } from '../models/news.models';
 
+// Get all users
 export const getAllUsers = async (
   _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const users = await collections.users?.find({}).toArray();
+    const users = await User.find();
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({
@@ -27,14 +24,15 @@ export const getAllUsers = async (
   }
 };
 
+// Get a user by ID
 export const getUsersbyId = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   try {
-    const user = await collections.users?.findOne({ _id: new ObjectId(id) });
+    const user = await User.findById(id);
 
     if (user) {
       res.status(200).json({ user });
@@ -49,23 +47,18 @@ export const getUsersbyId = async (
   }
 };
 
+// Create a user
 export const createOneUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const { email, name, uid } = req.body;
-    // const hashedPassword = await hashPassword(password);
-    const newUser: Users = { email, name, uid, favoriteItems: [] };
-    const result = await collections.users?.insertOne(newUser);
+    const newUser = new User({ email, name, uid, favoriteItems: [] });
 
-    if (result) {
-      res
-        .status(201)
-        .json({ message: USER_CREATED, userId: result.insertedId });
-    } else {
-      res.status(500).json({ message: 'Failed to create user.' });
-    }
+    const savedUser = await newUser.save();
+
+    res.status(201).json({ message: USER_CREATED, userId: savedUser._id });
   } catch (error) {
     res.status(400).json({
       message:
@@ -74,23 +67,22 @@ export const createOneUser = async (
   }
 };
 
+// Update a user fully
 export const updateOneUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const id = req.params.id;
+  const { id } = req.params;
+  const { email, name, uid } = req.body;
 
   try {
-    const { email, name, uid } = req.body;
-    // const hashedPassword = await hashPassword(password);
-    const updatedUser: Users = { email, name, uid, favoriteItems: [] };
-
-    const result = await collections.users?.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updatedUser }
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { email, name, uid, favoriteItems: [] },
+      { new: true, runValidators: true }
     );
 
-    if (result?.modifiedCount) {
+    if (updatedUser) {
       res.status(200).json({ message: USER_UPDATED });
     } else {
       res.status(404).json({ message: USER_NOT_FOUND });
@@ -102,52 +94,27 @@ export const updateOneUser = async (
     });
   }
 };
+
+// Partially update a user
 export const updateOneUserPartial = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const userId = req.params.id;
-  const updatedProperties = req.body;
-  if (updatedProperties.password) {
-    updatedProperties.password = await hashPassword(updatedProperties.password);
+  const { id } = req.params;
+  const updates = req.body;
+
+  if (updates.password) {
+    updates.password = await hashPassword(updates.password);
   }
-  try {
-    const user = await collections.users?.findOne({
-      _id: new ObjectId(userId),
-    });
-
-    if (!user) {
-      res.status(404).send({ message: 'User not found' });
-      return;
-    }
-
-    if (Object.keys(updatedProperties).length === 0) {
-      res.status(400).send({ message: 'No updates provided' });
-      return;
-    }
-
-    const update = { $set: updatedProperties };
-    await collections.users?.updateOne({ _id: new ObjectId(userId) }, update);
-
-    res.send({ message: 'User updated successfully' });
-  } catch (error) {
-    res.status(500).send({ message: 'Error updating user' });
-  }
-};
-
-export const deleteUserById = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const id = req.params.id;
 
   try {
-    const result = await collections.users?.deleteOne({
-      _id: new ObjectId(id),
+    const updatedUser = await User.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
     });
 
-    if (result?.deletedCount) {
-      res.status(200).json({ message: USER_DELETED + ' ' + id });
+    if (updatedUser) {
+      res.status(200).json({ message: USER_UPDATED });
     } else {
       res.status(404).json({ message: USER_NOT_FOUND });
     }
@@ -159,27 +126,113 @@ export const deleteUserById = async (
   }
 };
 
+// Delete a user by ID
+export const deleteUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { id } = req.params;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (deletedUser) {
+      res.status(200).json({ message: `${USER_DELETED} ${id}` });
+    } else {
+      res.status(404).json({ message: USER_NOT_FOUND });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message:
+        error instanceof Error ? error.message : 'An unknown error occurred',
+    });
+  }
+};
+
+// Add a favorite item to a user
 export const addUserFavoriteItem = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const userId = req.params.id;
-  const newsItemTitle = req.body.newsItemTitle;
+  const { userId } = req.params;
+  const { title } = req.body;
+
+  if (!title || typeof title !== 'string') {
+    res.status(400).send({ message: '`title` is required and must be valid.' });
+    return;
+  }
 
   try {
-    // Add the news item title to the user's favorites
-    await collections.users?.updateOne(
-      { _id: new ObjectId(userId) },
-      {
-        $addToSet: { favoriteItems: newsItemTitle },
-      }
+    const updatedUser = await User.findOneAndUpdate(
+      { uid: userId },
+      { $push: { favoriteItems: title } },
+      { new: true }
     );
+
+    if (!updatedUser) {
+      res.status(404).send({ message: 'User not found or no update made.' });
+      return;
+    }
 
     res.send({ message: 'Favorite item added successfully' });
   } catch (error) {
-    res.status(500).send({
-      message:
-        error instanceof Error ? error.message : 'An unknown error occurred',
-    });
+    console.error('Error occurred:', error);
+    res.status(500).send({ message: 'An unknown error occurred' });
+  }
+};
+
+// Remove a favorite item from a user
+export const removeUserFavoriteItem = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userId } = req.params;
+  const { title } = req.body;
+
+  if (!title || typeof title !== 'string') {
+    res.status(400).send({ message: '`title` is required and must be valid.' });
+    return;
+  }
+
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { uid: userId },
+      { $pull: { favoriteItems: title } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      res
+        .status(404)
+        .send({ message: 'User not found or item not in favorites.' });
+      return;
+    }
+
+    res.send({ message: 'Favorite item removed successfully' });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    res.status(500).send({ message: 'An unknown error occurred' });
+  }
+};
+
+// Get all favorite items of a user
+export const getAllFavorites = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { uid } = req.params;
+
+  try {
+    const user = await User.findOne({ uid }, { favoriteItems: 1 });
+
+    if (!user) {
+      res.status(404).send({ message: 'User not found.' });
+      return;
+    }
+
+    res.status(200).send({ favoriteItems: user.favoriteItems || [] });
+  } catch (error) {
+    console.error('Error occurred while fetching favorites:', error);
+    res.status(500).send({ message: 'An unknown error occurred' });
   }
 };

@@ -1,34 +1,29 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
-import { collections } from '../services/database.service';
 import { News } from '../models/news.models';
 import {
   SUCCESSFULL_CREATE,
   UNABLE_FIND,
-  FAILED_CREATE,
   SUCCESSFULL_UPDATE,
-  FAILED_UPDATE,
-  SUCCESSFULL_REMOVE,
   FAILED_REMOVE,
-  NOT_EXIST_REMOVE,
-  UNKNOWN_ERROR,
-  FAILED_UPDATE_REQUEST,
+  SUCCESSFULL_REMOVE,
 } from '../constants/strings';
 
+// Get all news
 export const getAllNews = async (
   _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const news = (await collections.news_articles
-      ?.find({})
-      .toArray()) as unknown as News[];
-    res.status(200).send(news);
-  } catch (err: any) {
-    res.status(500).send(err.message);
+    const news = await News.find();
+    res.status(200).json(news);
+  } catch (error: any) {
+    res
+      .status(500)
+      .send({ message: error.message || 'An unknown error occurred' });
   }
 };
 
+// Get news by ID
 export const getOneNewsById = async (
   req: Request,
   res: Response
@@ -36,36 +31,66 @@ export const getOneNewsById = async (
   const id = req.params.id;
 
   try {
-    const query = { _id: new ObjectId(id) };
-    const news = (await collections.news_articles?.findOne(
-      query
-    )) as unknown as News;
-
+    const news = await News.findById(id);
     if (news) {
-      res.status(200).send(news);
+      res.status(200).json(news);
     } else {
-      res.status(404).send(`${UNABLE_FIND} ${id}`);
+      res.status(404).send({ message: `${UNABLE_FIND} ${id}` });
     }
-  } catch (err: any) {
-    res.status(500).send(`${UNABLE_FIND} ${id}`);
+  } catch (error) {
+    res.status(500).send({ message: `${UNABLE_FIND} ${id}` });
   }
 };
+export const updateNewsArticlePartial = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const id = req.params.id;
+  const updates = req.body;
+
+  try {
+    const updatedNews = await News.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true }
+    );
+
+    if (updatedNews) {
+      res.status(200).send({
+        message: `${SUCCESSFULL_UPDATE}`,
+        updatedNews,
+      });
+    } else {
+      res.status(404).send({
+        message: `${UNABLE_FIND} ${id}`,
+      });
+    }
+  } catch (error: any) {
+    res.status(400).send({
+      message:
+        error.message ||
+        'An unknown error occurred while updating news article.',
+    });
+  }
+};
+
+// Create news
 export const createNewsArticle = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const newNews = req.body as News;
-    const result = await collections.news_articles?.insertOne(newNews);
-
-    result
-      ? res.status(201).send(`${SUCCESSFULL_CREATE} ${result.insertedId}`)
-      : res.status(500).send(`${FAILED_CREATE}`);
-  } catch (err: any) {
-    res.status(400).send(err.message);
+    const newNews = new News(req.body);
+    const savedNews = await newNews.save();
+    res
+      .status(201)
+      .send({ message: `${SUCCESSFULL_CREATE}`, newsId: savedNews._id });
+  } catch (error: any) {
+    res.status(400).send({ message: error.message });
   }
 };
 
+// Update news by ID
 export const updateNewsById = async (
   req: Request,
   res: Response
@@ -73,49 +98,20 @@ export const updateNewsById = async (
   const id = req.params.id;
 
   try {
-    const updatedNews: News = req.body as News;
-    const query = { _id: new ObjectId(id) };
-
-    const result = await collections.news_articles?.updateOne(query, {
-      $set: updatedNews,
+    const updatedNews = await News.findByIdAndUpdate(id, req.body, {
+      new: true,
     });
-
-    result?.modifiedCount
-      ? res.status(200).send(`${SUCCESSFULL_UPDATE} ${id}`)
-      : res.status(304).send(`${FAILED_UPDATE} ${id}`);
-  } catch (err: any) {
-    res.status(400).send(err.message);
-  }
-};
-
-export const updateNewsArticlePartial = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const id = req.params.id;
-    const updates = req.body;
-
-    const result = await collections.news_articles?.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updates }
-    );
-
-    if (result === undefined) {
-      res.status(500).send({ message: FAILED_UPDATE + ': ' + id });
-      return;
-    }
-
-    if (result.modifiedCount === 1) {
-      res.status(200).send({ message: SUCCESSFULL_UPDATE + ': ' + id });
+    if (updatedNews) {
+      res.status(200).send({ message: `${SUCCESSFULL_UPDATE}`, updatedNews });
     } else {
-      res.status(304).send({ FAILED_UPDATE_REQUEST });
+      res.status(404).send({ message: `${UNABLE_FIND} ${id}` });
     }
-  } catch (error) {
-    res.status(500).send({ message: UNKNOWN_ERROR });
+  } catch (error: any) {
+    res.status(400).send({ message: error.message });
   }
 };
 
+// Delete news by ID
 export const deleteNewsArticleById = async (
   req: Request,
   res: Response
@@ -123,17 +119,13 @@ export const deleteNewsArticleById = async (
   const id = req.params.id;
 
   try {
-    const query = { _id: new ObjectId(id) };
-    const result = await collections.news_articles?.deleteOne(query);
-
-    if (result && result.deletedCount) {
-      res.status(202).send(`${SUCCESSFULL_REMOVE} ${id}`);
-    } else if (!result) {
-      res.status(400).send(`${FAILED_REMOVE}${id}`);
-    } else if (!result.deletedCount) {
-      res.status(404).send(`${NOT_EXIST_REMOVE} ${id}`);
+    const deletedNews = await News.findByIdAndDelete(id);
+    if (deletedNews) {
+      res.status(202).send({ message: `${SUCCESSFULL_REMOVE}` });
+    } else {
+      res.status(404).send({ message: `${FAILED_REMOVE} ${id}` });
     }
-  } catch (err: any) {
-    res.status(400).send(err.message);
+  } catch (error: any) {
+    res.status(400).send({ message: error.message });
   }
 };

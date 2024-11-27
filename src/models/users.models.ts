@@ -1,7 +1,11 @@
-import { News } from './news.models';
-export interface Users {
-  name: string | null;
-  email: string | undefined;
-  uid: string;
-  favoriteItems: string[];
-}
+import mongoose, { Schema, model } from 'mongoose';
+
+const userSchema = new Schema({
+  uid: { type: String, required: true },
+  email: { type: String, required: true },
+  name: { type: String, default: null },
+  favoriteItems: [{ type: String }],
+});
+
+// Ensure you use the correct collection name and connection
+export const User = mongoose.model('User', userSchema, 'users');

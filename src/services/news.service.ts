@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-import { collections } from '../services/database.service';
+import { News, NewsDocument } from '../models/news.models'; // Import NewsDocument type
 import {
   API_URL,
   FAILED_DELETE_MANY,
@@ -8,14 +7,15 @@ import {
   FAILED_UPDATE_MANY,
   NOTHING_HAPPENED,
 } from '../constants/strings';
-import { News } from '../models/news.models';
 import { onloadOperations } from '../app';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const apikey = process.env.APP_API_KEY;
 
-export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
+export const fetchNewsArticles = async (
+  apiUrl: string
+): Promise<NewsDocument[]> => {
   const response = await axios.get(apiUrl);
 
   if (response.status !== 200) {
@@ -34,35 +34,57 @@ export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
   }));
 };
 
-export const insertNewsArticles = async (newsArticles: News[]) => {
-  const result = await collections.news_articles?.insertMany(newsArticles);
-
-  if (result) {
-    console.log(`Inserted ${result.insertedCount} news articles into MongoDB`);
-  } else {
+export const insertNewsArticles = async (newsArticles: NewsDocument[]) => {
+  try {
+    // Use the Mongoose model to insert news articles
+    const result = await News.insertMany(newsArticles); // This will insert documents using the News model
+    if (result) {
+      console.log(`Inserted ${result.length} news articles into MongoDB`);
+    } else {
+      throw new Error(FAILED_INSERT);
+    }
+  } catch (error: any) {
+    console.error('Error inserting news articles:', error.message);
     throw new Error(FAILED_INSERT);
   }
 };
 
-export const updateNewsArticles = async (newsArticles: News[]) => {
-  const result = await collections.news_articles?.updateMany(
-    {},
-    { $set: { articles: newsArticles } }
-  );
+export const updateNewsArticles = async (newsArticles: NewsDocument[]) => {
+  try {
+    // Update each article
+    const updatePromises = newsArticles.map(async (article) => {
+      const result = await News.updateOne(
+        { title: article.title },
+        { $set: article },
+        { upsert: true } // Insert if not exists
+      );
+      return result;
+    });
 
-  if (result) {
-    console.log(`Updated ${result.modifiedCount} news articles into MongoDB`);
-  } else {
+    const results = await Promise.all(updatePromises);
+    const modifiedCount = results.filter((res) => res.modifiedCount > 0).length;
+    if (modifiedCount > 0) {
+      console.log(`Updated ${modifiedCount} news articles in MongoDB`);
+    } else {
+      throw new Error(FAILED_UPDATE_MANY);
+    }
+  } catch (error: any) {
+    console.error('Error updating news articles:', error.message);
     throw new Error(FAILED_UPDATE_MANY);
   }
 };
 
 export const deleteNewsArticles = async () => {
-  const result = await collections.news_articles?.deleteMany({});
-
-  if (result) {
-    console.log(`Deleted ${result.deletedCount} news articles from MongoDB`);
-  } else {
+  try {
+    // Delete all articles
+    const result = await News.deleteMany({});
+    if (result) {
+      console.log(`Deleted ${result.deletedCount} news articles from MongoDB`);
+    } else {
+      throw new Error(FAILED_DELETE_MANY);
+    }
+  } catch (error: any) {
+    console.error('Error deleting news articles:', error.message);
     throw new Error(FAILED_DELETE_MANY);
   }
 };

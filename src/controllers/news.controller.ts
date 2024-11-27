@@ -38,7 +38,7 @@ export const updateNewsPartial = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const news = await updateNewsArticlePartial(req, res).then((news) => {});
+  const news = await updateNewsArticlePartial(req, res).then(() => {});
 };
 export const deleteNewsById = async (
   req: Request,
