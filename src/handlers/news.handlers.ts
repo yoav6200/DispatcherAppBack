@@ -8,7 +8,6 @@ import {
   SUCCESSFULL_REMOVE,
 } from '../constants/strings';
 
-// Get all news
 export const getAllNews = async (
   _req: Request,
   res: Response
@@ -23,7 +22,6 @@ export const getAllNews = async (
   }
 };
 
-// Get news by ID
 export const getOneNewsById = async (
   req: Request,
   res: Response

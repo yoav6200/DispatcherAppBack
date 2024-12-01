@@ -8,7 +8,6 @@ import {
 } from '../constants/strings';
 import { hashPassword } from '../utils/validations/hashPassword';
 
-// Get all users
 export const getAllUsers = async (
   _req: Request,
   res: Response
@@ -24,7 +23,6 @@ export const getAllUsers = async (
   }
 };
 
-// Get a user by ID
 export const getUsersbyId = async (
   req: Request,
   res: Response
@@ -47,7 +45,6 @@ export const getUsersbyId = async (
   }
 };
 
-// Create a user
 export const createOneUser = async (
   req: Request,
   res: Response
@@ -67,7 +64,6 @@ export const createOneUser = async (
   }
 };
 
-// Update a user fully
 export const updateOneUser = async (
   req: Request,
   res: Response
@@ -95,7 +91,6 @@ export const updateOneUser = async (
   }
 };
 
-// Partially update a user
 export const updateOneUserPartial = async (
   req: Request,
   res: Response
@@ -126,7 +121,6 @@ export const updateOneUserPartial = async (
   }
 };
 
-// Delete a user by ID
 export const deleteUserById = async (
   req: Request,
   res: Response
@@ -149,7 +143,6 @@ export const deleteUserById = async (
   }
 };
 
-// Add a favorite item to a user
 export const addUserFavoriteItem = async (
   req: Request,
   res: Response
@@ -181,7 +174,6 @@ export const addUserFavoriteItem = async (
   }
 };
 
-// Remove a favorite item from a user
 export const removeUserFavoriteItem = async (
   req: Request,
   res: Response
@@ -215,7 +207,6 @@ export const removeUserFavoriteItem = async (
   }
 };
 
-// Get all favorite items of a user
 export const getAllFavorites = async (
   req: Request,
   res: Response

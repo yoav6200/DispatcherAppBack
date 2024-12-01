@@ -1,18 +1,18 @@
-import { Schema, model, Document } from 'mongoose';
+// src/models/news.models.ts
+import { Schema, model } from 'mongoose';
 
-// Define the interface for the News document (i.e., the structure of the document)
-export interface NewsDocument extends Document {
+export interface News {
   title: string;
   description: string;
   url: string;
   urlToImage: string;
   publishedAt: Date;
+  id: number | null;
   author: string;
   content: string;
 }
 
-// Define the Mongoose schema
-const newsSchema = new Schema<NewsDocument>({
+const newsSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   url: { type: String, required: true },
@@ -23,5 +23,4 @@ const newsSchema = new Schema<NewsDocument>({
   content: { type: String, required: true },
 });
 
-// Create and export the Mongoose model
-export const News = model<NewsDocument>('news_articles', newsSchema);
+export const News = model<News>('news_articles', newsSchema);

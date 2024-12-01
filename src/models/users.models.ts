@@ -7,5 +7,4 @@ const userSchema = new Schema({
   favoriteItems: [{ type: String }],
 });
 
-// Ensure you use the correct collection name and connection
 export const User = mongoose.model('User', userSchema, 'users');

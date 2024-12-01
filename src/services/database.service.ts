@@ -25,7 +25,7 @@ export const connectToDatabase = async (
 ): Promise<void> => {
   try {
     if (operation === onloadOperations.Update) {
-      await fetchUsersFromFireBase(); // No need to pass `db` anymore
+      await fetchUsersFromFireBase();
     }
   } catch (error) {
     console.error('Error during database operations:', error);

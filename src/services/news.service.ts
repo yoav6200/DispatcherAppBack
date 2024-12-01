@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { News, NewsDocument } from '../models/news.models'; // Import NewsDocument type
+import { News } from '../models/news.models';
 import {
   API_URL,
   FAILED_DELETE_MANY,
@@ -13,9 +13,7 @@ dotenv.config();
 
 const apikey = process.env.APP_API_KEY;
 
-export const fetchNewsArticles = async (
-  apiUrl: string
-): Promise<NewsDocument[]> => {
+export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
   const response = await axios.get(apiUrl);
 
   if (response.status !== 200) {
@@ -23,21 +21,33 @@ export const fetchNewsArticles = async (
   }
 
   const data = response.data;
-  return data.articles.map((article: any) => ({
-    title: article.title,
-    description: article.description,
-    url: article.url,
-    urlToImage: article.urlToImage,
-    publishedAt: article.publishedAt,
-    author: article.author,
-    content: article.content,
-  }));
+  return data.articles
+    .filter(
+      (article: any) =>
+        article.urlToImage &&
+        article.author &&
+        article.content &&
+        article.description &&
+        article.publishedAt &&
+        article.title &&
+        article.url &&
+        article.urlToImage &&
+        article.id
+    )
+    .map((article: any) => ({
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      urlToImage: article.urlToImage,
+      publishedAt: article.publishedAt,
+      author: article.author,
+      content: article.content,
+    }));
 };
 
-export const insertNewsArticles = async (newsArticles: NewsDocument[]) => {
+export const insertNewsArticles = async (newsArticles: News[]) => {
   try {
-    // Use the Mongoose model to insert news articles
-    const result = await News.insertMany(newsArticles); // This will insert documents using the News model
+    const result = await News.insertMany(newsArticles);
     if (result) {
       console.log(`Inserted ${result.length} news articles into MongoDB`);
     } else {
@@ -49,7 +59,7 @@ export const insertNewsArticles = async (newsArticles: NewsDocument[]) => {
   }
 };
 
-export const updateNewsArticles = async (newsArticles: NewsDocument[]) => {
+export const updateNewsArticles = async (newsArticles: News[]) => {
   try {
     // Update each article
     const updatePromises = newsArticles.map(async (article) => {

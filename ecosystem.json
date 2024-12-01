@@ -4,7 +4,12 @@
         "name": "DispatcherAppBack", 
         "script": "./build/app.js", 
         "env": {
-          "NODE_ENV": "development" 
+          "NODE_ENV": "development" ,
+          "PORT": 3000 
+        },
+        "env_staging": {
+          "NODE_ENV": "staging",
+          "PORT": 3000
         }
       }
     ],
@@ -20,7 +25,8 @@
         "post-deploy": "mkdir -p logs && npm install && pm2 reload ecosystem.json --env staging", 
         "pre-deploy-local": "echo 'Deploying code to servers'",
         "env": {
-          "NODE_ENV": "staging"
+          "NODE_ENV": "staging",
+          "PORT": 3000 
         }
       }
     }

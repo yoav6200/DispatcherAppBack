@@ -10,7 +10,7 @@ import {
   DATABASE_CONNECTED,
   START,
 } from './constants/strings';
-import { on } from 'events';
+
 import helmet from 'helmet';
 
 export enum onloadOperations {
