@@ -15,7 +15,7 @@
         "host": ["ec2-51-20-255-87.eu-north-1.compute.amazonaws.com"],
         "ref": "origin/dev", 
         "repo": "git@github.com:yoav6200/DispatcherAppBack.git",
-        "path": "/home/ubuntu/DispatcherApp/Back", 
+        "path": "/home/ubuntu/", 
         "ssh_options": "StrictHostKeyChecking=no",
         "post-deploy": "mkdir -p logs && npm install && pm2 reload ecosystem.json --env staging", 
         "pre-deploy-local": "echo 'Deploying code to servers'",
