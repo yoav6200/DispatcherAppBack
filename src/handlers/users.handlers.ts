@@ -7,6 +7,8 @@ import {
   USER_UPDATED,
 } from '../constants/strings';
 import { hashPassword } from '../utils/validations/hashPassword';
+import { News } from '../models/news.models';
+import { ObjectId } from 'mongodb';
 
 export const getAllUsers = async (
   _req: Request,
@@ -150,27 +152,43 @@ export const addUserFavoriteItem = async (
   const { userId } = req.params;
   const { title } = req.body;
 
+  // Validate input
   if (!title || typeof title !== 'string') {
     res.status(400).send({ message: '`title` is required and must be valid.' });
     return;
   }
 
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { uid: userId },
-      { $push: { favoriteItems: title } },
-      { new: true }
-    );
+    // Find the news article by title
+    const newsArticle = await News.findOne({ title }).exec();
 
-    if (!updatedUser) {
-      res.status(404).send({ message: 'User not found or no update made.' });
+    if (!newsArticle) {
+      res.status(404).send({ message: 'News article not found.' });
       return;
     }
 
-    res.send({ message: 'Favorite item added successfully' });
+    // Find the user by `uid` field
+    const user = await User.findOne({ uid: userId }).exec();
+
+    if (!user) {
+      res.status(404).send({ message: 'User not found.' });
+      return;
+    }
+
+    // Check if the article is already in favorites
+    if (user.favoriteItems.includes(newsArticle._id)) {
+      res.status(400).send({ message: 'Article already in favorites.' });
+      return;
+    }
+
+    // Add the article's ObjectId to the user's favorite items
+    user.favoriteItems.push(newsArticle._id);
+    await user.save();
+
+    res.status(200).send({ message: 'Favorite item added successfully' });
   } catch (error) {
     console.error('Error occurred:', error);
-    res.status(500).send({ message: 'An unknown error occurred' });
+    res.status(500).send({ message: 'An unknown error occurred.' });
   }
 };
 
@@ -181,29 +199,47 @@ export const removeUserFavoriteItem = async (
   const { userId } = req.params;
   const { title } = req.body;
 
+  // Validate input
   if (!title || typeof title !== 'string') {
+    console.log('title', title);
     res.status(400).send({ message: '`title` is required and must be valid.' });
     return;
   }
 
   try {
-    const updatedUser = await User.findOneAndUpdate(
-      { uid: userId },
-      { $pull: { favoriteItems: title } },
-      { new: true }
-    );
+    // Find the news article by title
+    const newsArticle = await News.findOne({ title }).exec();
 
-    if (!updatedUser) {
-      res
-        .status(404)
-        .send({ message: 'User not found or item not in favorites.' });
+    if (!newsArticle) {
+      res.status(404).send({ message: 'News article not found.' });
       return;
     }
 
-    res.send({ message: 'Favorite item removed successfully' });
+    // Find the user by `uid` field
+    const user = await User.findOne({ uid: userId }).exec();
+
+    if (!user) {
+      res.status(404).send({ message: 'User not found.' });
+      return;
+    }
+
+    // Check if the article is not in favorites
+    if (!user.favoriteItems.includes(newsArticle._id)) {
+      res.status(400).send({ message: 'Article not in favorites.' });
+      return;
+    }
+
+    // Remove the article's ObjectId from the user's favorite items
+    user.favoriteItems = user.favoriteItems.filter(
+      (itemId) => !itemId.equals(newsArticle._id)
+    );
+
+    await user.save();
+
+    res.status(200).send({ message: 'Favorite item removed successfully' });
   } catch (error) {
     console.error('Error occurred:', error);
-    res.status(500).send({ message: 'An unknown error occurred' });
+    res.status(500).send({ message: 'An unknown error occurred.' });
   }
 };
 
@@ -211,17 +247,22 @@ export const getAllFavorites = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { uid } = req.params;
+  const uid = req.params.uid;
 
   try {
-    const user = await User.findOne({ uid }, { favoriteItems: 1 });
+    const user = await User.findOne({ uid });
 
     if (!user) {
       res.status(404).send({ message: 'User not found.' });
       return;
     }
 
-    res.status(200).send({ favoriteItems: user.favoriteItems || [] });
+    const favoriteArticleIds = user.favoriteItems;
+    const favoriteArticles = await News.find({
+      _id: { $in: favoriteArticleIds },
+    });
+
+    res.status(200).send({ favoriteArticles });
   } catch (error) {
     console.error('Error occurred while fetching favorites:', error);
     res.status(500).send({ message: 'An unknown error occurred' });

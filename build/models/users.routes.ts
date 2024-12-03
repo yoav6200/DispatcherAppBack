@@ -28,7 +28,7 @@ usersRouter.get('/', getUsers);
 
 usersRouter.get('/:id', getUserById);
 
-usersRouter.get('/:uid/favorite', getAllUserFavorites);
+usersRouter.get('/:userId/favorite', getAllUserFavorites);
 
 usersRouter.post('/', validateUser, createUser);
 

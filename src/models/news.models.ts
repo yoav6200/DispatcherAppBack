@@ -1,13 +1,11 @@
-// src/models/news.models.ts
-import { Schema, model } from 'mongoose';
+import { ObjectId, Schema, model } from 'mongoose';
 
 export interface News {
   title: string;
   description: string;
   url: string;
   urlToImage: string;
-  publishedAt: Date;
-  id: number | null;
+  publishedAt: string;
   author: string;
   content: string;
 }
@@ -17,8 +15,7 @@ const newsSchema = new Schema({
   description: { type: String, required: true },
   url: { type: String, required: true },
   urlToImage: { type: String, required: true },
-  publishedAt: { type: Date, required: true },
-  id: { type: Number, required: false },
+  publishedAt: { type: String, required: true },
   author: { type: String, required: true },
   content: { type: String, required: true },
 });

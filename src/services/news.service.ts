@@ -21,18 +21,17 @@ export const fetchNewsArticles = async (apiUrl: string): Promise<News[]> => {
   }
 
   const data = response.data;
+
   return data.articles
     .filter(
       (article: any) =>
-        article.urlToImage &&
-        article.author &&
-        article.content &&
-        article.description &&
-        article.publishedAt &&
         article.title &&
+        article.description &&
         article.url &&
         article.urlToImage &&
-        article.id
+        article.publishedAt &&
+        article.author &&
+        article.content
     )
     .map((article: any) => ({
       title: article.title,
