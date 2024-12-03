@@ -250,7 +250,7 @@ export const getAllFavorites = async (
   const uid = req.params.uid;
 
   try {
-    const user = await User.findOne({ uid });
+    const user = await User.findOne({ uid: uid });
 
     if (!user) {
       res.status(404).send({ message: 'User not found.' });
